@@ -25,14 +25,14 @@ class ProfileLivewireTest extends TestCase
         $this->user = User::factory()->create(['password' => 'lama12345']);
     }
 
-    private function component()
+    private function makeComponent()
     {
         return Livewire::actingAs($this->user)->test(Profile::class);
     }
 
     public function test_it_prefills_current_data(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->assertSet('name', $this->user->name)
             ->assertSet('username', $this->user->username)
             ->assertSet('email', $this->user->email);
@@ -40,7 +40,7 @@ class ProfileLivewireTest extends TestCase
 
     public function test_it_updates_profile(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->set('name', 'Nama Baru')
             ->set('username', 'username_baru')
             ->set('email', 'baru@example.com')
@@ -55,7 +55,7 @@ class ProfileLivewireTest extends TestCase
     {
         $other = User::factory()->create();
 
-        $this->component()
+        $this->makeComponent()
             ->set('username', $other->username)
             ->set('email', $other->email)
             ->call('saveProfile')
@@ -64,7 +64,7 @@ class ProfileLivewireTest extends TestCase
 
     public function test_it_changes_password(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->set('current_password', 'lama12345')
             ->set('password', 'baru12345')
             ->set('password_confirmation', 'baru12345')
@@ -77,7 +77,7 @@ class ProfileLivewireTest extends TestCase
 
     public function test_password_change_requires_correct_current_password(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->set('current_password', 'salah')
             ->set('password', 'baru12345')
             ->set('password_confirmation', 'baru12345')
@@ -87,7 +87,7 @@ class ProfileLivewireTest extends TestCase
 
     public function test_it_uploads_and_removes_photo(): void
     {
-        $component = $this->component();
+        $component = $this->makeComponent();
 
         $component->set('photo', UploadedFile::fake()->image('a.jpg'))->call('savePhoto')->assertHasNoErrors();
         $first = $this->user->fresh()->profile_photo_path;
@@ -102,7 +102,7 @@ class ProfileLivewireTest extends TestCase
 
     public function test_photo_must_be_an_image(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->set('photo', UploadedFile::fake()->create('x.pdf', 10, 'application/pdf'))
             ->call('savePhoto')
             ->assertHasErrors(['photo']);

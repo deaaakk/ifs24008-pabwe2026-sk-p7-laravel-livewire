@@ -28,7 +28,7 @@ class StockListLivewireTest extends TestCase
         $this->member = User::factory()->create();
     }
 
-    private function component()
+    private function makeComponent()
     {
         return Livewire::actingAs($this->member)->test(StockList::class);
     }
@@ -51,14 +51,14 @@ class StockListLivewireTest extends TestCase
         Stock::factory()->for($this->member)->create(['name' => 'Kabel HDMI']);
         Stock::factory()->create(['name' => 'Milik Orang Lain']);
 
-        $this->component()
+        $this->makeComponent()
             ->assertSee('Kabel HDMI')
             ->assertDontSee('Milik Orang Lain');
     }
 
     public function test_it_shows_empty_state(): void
     {
-        $this->component()->assertSee('Belum ada stok.');
+        $this->makeComponent()->assertSee('Belum ada stok.');
     }
 
     public function test_it_can_search_by_name_or_sku(): void
@@ -66,7 +66,7 @@ class StockListLivewireTest extends TestCase
         Stock::factory()->for($this->member)->create(['name' => 'Kabel HDMI', 'sku' => 'KBL-01']);
         Stock::factory()->for($this->member)->create(['name' => 'Mouse Optik', 'sku' => 'MSE-01']);
 
-        $this->component()
+        $this->makeComponent()
             ->set('search', 'HDMI')
             ->assertSee('Kabel HDMI')
             ->assertDontSee('Mouse Optik')
@@ -80,7 +80,7 @@ class StockListLivewireTest extends TestCase
         Stock::factory()->for($this->member)->create(['name' => 'Barang Habis', 'quantity' => 0, 'status' => 'out_of_stock']);
         Stock::factory()->for($this->member)->create(['name' => 'Barang Aman', 'quantity' => 50, 'status' => 'available']);
 
-        $this->component()
+        $this->makeComponent()
             ->set('statusFilter', 'out_of_stock')
             ->assertSee('Barang Habis')
             ->assertDontSee('Barang Aman');
@@ -88,7 +88,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_it_can_create_stock_and_derives_status(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->call('openCreate')
             ->assertSet('showForm', true)
             ->set('name', 'Pulpen')
@@ -113,7 +113,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_create_validates_required_fields(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->call('openCreate')
             ->set('name', '')
             ->set('quantity', -1)
@@ -125,7 +125,7 @@ class StockListLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create(['name' => 'Lama', 'quantity' => 20, 'min_stock' => 5]);
 
-        $this->component()
+        $this->makeComponent()
             ->call('openEdit', $stock->id)
             ->assertSet('editingId', $stock->id)
             ->assertSet('name', 'Lama')
@@ -140,7 +140,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_cancel_closes_the_form(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->call('openCreate')
             ->set('name', 'Draft')
             ->call('cancel')
@@ -152,7 +152,7 @@ class StockListLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create();
 
-        $this->component()
+        $this->makeComponent()
             ->call('delete', $stock->id)
             ->assertSet('notice', 'Stok berhasil dihapus.');
 
@@ -162,7 +162,7 @@ class StockListLivewireTest extends TestCase
     public function test_adjust_quantity_updates_status(): void
     {
         $stock = Stock::factory()->for($this->member)->create(['quantity' => 6, 'min_stock' => 5, 'status' => 'available']);
-        $component = $this->component();
+        $component = $this->makeComponent();
 
         $component->call('adjust', $stock->id, -2);
         $this->assertDatabaseHas('stocks', ['id' => $stock->id, 'quantity' => 4, 'status' => 'low_stock']);
@@ -178,9 +178,9 @@ class StockListLivewireTest extends TestCase
     {
         $other = Stock::factory()->create();
 
-        $this->component()->call('adjust', $other->id, 1)->assertStatus(403);
-        $this->component()->call('openEdit', $other->id)->assertStatus(403);
-        $this->component()->call('delete', $other->id)->assertStatus(403);
+        $this->makeComponent()->call('adjust', $other->id, 1)->assertStatus(403);
+        $this->makeComponent()->call('openEdit', $other->id)->assertStatus(403);
+        $this->makeComponent()->call('delete', $other->id)->assertStatus(403);
 
         $this->assertDatabaseHas('stocks', ['id' => $other->id, 'quantity' => $other->quantity]);
     }
@@ -197,7 +197,7 @@ class StockListLivewireTest extends TestCase
     {
         Stock::factory()->for($this->member)->count(2)->create();
 
-        $this->component()->call('exportExcel')->assertFileDownloaded();
+        $this->makeComponent()->call('exportExcel')->assertFileDownloaded();
     }
 
     public function test_it_can_import_excel(): void
@@ -208,7 +208,7 @@ class StockListLivewireTest extends TestCase
             ['Penghapus', 'PNG-01', 2, 'pcs', 1500, 5, '', ''],
         ]);
 
-        $this->component()
+        $this->makeComponent()
             ->set('importFile', UploadedFile::fake()->createWithContent('stok.xlsx', $content))
             ->call('importExcel')
             ->assertHasNoErrors()
@@ -220,9 +220,9 @@ class StockListLivewireTest extends TestCase
 
     public function test_import_requires_a_valid_file(): void
     {
-        $this->component()->call('importExcel')->assertHasErrors(['importFile' => 'required']);
+        $this->makeComponent()->call('importExcel')->assertHasErrors(['importFile' => 'required']);
 
-        $this->component()
+        $this->makeComponent()
             ->set('importFile', UploadedFile::fake()->createWithContent('catatan.txt', 'halo'))
             ->call('importExcel')
             ->assertHasErrors(['importFile' => 'extensions']);
@@ -230,7 +230,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_import_reports_unreadable_file(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->set('importFile', UploadedFile::fake()->createWithContent('rusak.xlsx', 'bukan excel'))
             ->call('importExcel')
             ->assertHasErrors(['importFile']);
@@ -245,7 +245,7 @@ class StockListLivewireTest extends TestCase
         ]);
         $this->app->instance(AiClientInterface::class, $stub);
 
-        $this->component()
+        $this->makeComponent()
             ->call('openAi')
             ->assertSet('showAi', true)
             ->set('aiPrompt', 'alat tulis kantor')
@@ -265,7 +265,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_ai_generate_validates_prompt(): void
     {
-        $this->component()->call('generateAi')->assertHasErrors(['aiPrompt' => 'required']);
+        $this->makeComponent()->call('generateAi')->assertHasErrors(['aiPrompt' => 'required']);
     }
 
     public function test_ai_generate_reports_failure(): void
@@ -274,7 +274,7 @@ class StockListLivewireTest extends TestCase
         $stub->method('generate')->willThrowException(new RuntimeException('layanan down'));
         $this->app->instance(AiClientInterface::class, $stub);
 
-        $this->component()
+        $this->makeComponent()
             ->set('aiPrompt', 'alat tulis')
             ->call('generateAi')
             ->assertHasErrors(['aiPrompt']);
@@ -286,7 +286,7 @@ class StockListLivewireTest extends TestCase
         $stub->method('generate')->willReturn([]);
         $this->app->instance(AiClientInterface::class, $stub);
 
-        $this->component()
+        $this->makeComponent()
             ->set('aiPrompt', 'alat tulis')
             ->call('generateAi')
             ->assertHasErrors(['aiPrompt']);
@@ -294,7 +294,7 @@ class StockListLivewireTest extends TestCase
 
     public function test_ai_save_requires_a_selection(): void
     {
-        $this->component()
+        $this->makeComponent()
             ->call('openAi')
             ->call('saveAiItems')
             ->assertHasErrors(['aiSelected' => 'required']);

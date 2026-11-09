@@ -11,12 +11,14 @@ class RoutingTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_root_redirects_guest_to_login(): void
+    public function test_root_shows_login_page_without_redirect_for_guest(): void
     {
-        $this->get('/')->assertRedirect('/login');
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('id="login-username"', false);
     }
 
-    public function test_root_redirects_by_role(): void
+    public function test_root_redirects_authenticated_user_by_role(): void
     {
         $this->actingAs(User::factory()->admin()->create())->get('/')->assertRedirect('/admin/users');
 
@@ -34,7 +36,7 @@ class RoutingTest extends TestCase
 
     public function test_authenticated_user_is_redirected_away_from_login(): void
     {
-        $this->actingAs(User::factory()->create())->get('/login')->assertRedirect('/');
+        $this->actingAs(User::factory()->create())->get('/login')->assertRedirect('/stocks');
     }
 
     public function test_member_pages_render_for_member(): void

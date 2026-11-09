@@ -30,6 +30,7 @@ class StockExcelService
                 $stock->name,
                 $stock->sku,
                 $stock->quantity,
+
                 $stock->unit,
                 $stock->price,
                 $stock->min_stock,
@@ -50,14 +51,18 @@ class StockExcelService
     /**
      * Impor stok milik $user dari file Excel. Kolom status diabaikan
      * (status dihitung ulang dari quantity & min_stock).
+     * Hanya format Excel (.xlsx / .xls) yang diterima; file lain melempar exception.
      */
     public function import(User $user, string $path): int
     {
-        $rows = IOFactory::load($path)->getActiveSheet()->toArray(null, true, true, false);
+        $rows = IOFactory::load($path, 0, [IOFactory::READER_XLSX, IOFactory::READER_XLS])
+            ->getActiveSheet()
+            ->toArray(null, true, true, false);
 
         $count = 0;
         foreach (array_slice($rows, 1) as $row) {
             $name = trim((string) ($row[0] ?? ''));
+
 
             if ($name === '') {
                 continue;

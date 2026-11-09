@@ -12,17 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:1000-per-second')->group(function () {
-    Route::get('/', function () {
-        $user = Auth::user();
-
-        if (! $user) {
-            return redirect()->route('login');
-        }
-
-        return redirect($user->isAdmin() ? '/admin/users' : '/stocks');
-    });
-
     Route::middleware('guest')->group(function () {
+        Route::get('/', Login::class)->name('home');
         Route::get('/login', Login::class)->name('login');
         Route::get('/register', Register::class)->name('register');
     });

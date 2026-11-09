@@ -6,7 +6,7 @@ yang harus ditimpa/ditambahkan ke proyek Laravel 13 baru.
 ## Pasang (ringkas)
 
 ```bash
-laravel new abdullah_ubaid-pabwe2026-sk-p7-laravel-livewire --database=mysql --phpunit --no-node --no-boost --no-interaction
+laravel new ifs24008-pabwe2026-sk-p7-laravel-livewire --database=mysql --phpunit --no-node --no-boost --no-interaction
 cd ifs24008-pabwe2026-sk-p7-laravel-livewire
 composer require livewire/livewire phpoffice/phpspreadsheet
 

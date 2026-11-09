@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Pengguna yang sudah login dan membuka / atau /login diarahkan sesuai role
+        $middleware->redirectUsersTo(fn () => auth()->user()?->isAdmin() ? '/admin/users' : '/stocks');
+
         $middleware->alias([
             'role' => EnsureRole::class,
             'owns.stock' => EnsureStockOwnership::class,

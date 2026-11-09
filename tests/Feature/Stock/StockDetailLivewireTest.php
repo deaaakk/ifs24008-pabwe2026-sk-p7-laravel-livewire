@@ -25,7 +25,7 @@ class StockDetailLivewireTest extends TestCase
         $this->member = User::factory()->create();
     }
 
-    private function component(Stock $stock)
+    private function makeComponent(Stock $stock)
     {
         return Livewire::actingAs($this->member)->test(StockDetail::class, ['stock' => $stock]);
     }
@@ -34,7 +34,7 @@ class StockDetailLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create(['name' => 'Kabel', 'description' => '**tebal**']);
 
-        $this->component($stock)
+        $this->makeComponent($stock)
             ->assertSee('Kabel')
             ->assertSeeHtml('<strong>tebal</strong>');
     }
@@ -43,19 +43,19 @@ class StockDetailLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create(['description' => '<script>alert(1)</script>teks']);
 
-        $this->component($stock)->assertDontSeeHtml('<script>alert(1)</script>');
+        $this->makeComponent($stock)->assertDontSeeHtml('<script>alert(1)</script>');
     }
 
     public function test_member_cannot_open_other_members_stock(): void
     {
-        $this->component(Stock::factory()->create())->assertStatus(403);
+        $this->makeComponent(Stock::factory()->create())->assertStatus(403);
     }
 
     public function test_it_can_update_details(): void
     {
         $stock = Stock::factory()->for($this->member)->create(['quantity' => 20, 'min_stock' => 5]);
 
-        $this->component($stock)
+        $this->makeComponent($stock)
             ->set('name', 'Nama Baru')
             ->set('quantity', 2)
             ->set('description', '# Judul')
@@ -70,14 +70,14 @@ class StockDetailLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create();
 
-        $this->component($stock)->set('name', '')->call('save')->assertHasErrors(['name' => 'required']);
+        $this->makeComponent($stock)->set('name', '')->call('save')->assertHasErrors(['name' => 'required']);
     }
 
     public function test_it_can_adjust_quantity(): void
     {
         $stock = Stock::factory()->for($this->member)->create(['quantity' => 3, 'min_stock' => 5, 'status' => 'low_stock']);
 
-        $this->component($stock)
+        $this->makeComponent($stock)
             ->call('adjust', 10)
             ->assertSet('quantity', 13);
 
@@ -87,7 +87,7 @@ class StockDetailLivewireTest extends TestCase
     public function test_it_can_upload_replace_and_remove_cover(): void
     {
         $stock = Stock::factory()->for($this->member)->create();
-        $component = $this->component($stock);
+        $component = $this->makeComponent($stock);
 
         $component->set('cover', UploadedFile::fake()->image('a.jpg'))->call('uploadCover')->assertHasNoErrors();
         $first = $stock->fresh()->cover_image_path;
@@ -108,7 +108,7 @@ class StockDetailLivewireTest extends TestCase
     {
         $stock = Stock::factory()->for($this->member)->create();
 
-        $this->component($stock)
+        $this->makeComponent($stock)
             ->set('cover', UploadedFile::fake()->create('dokumen.pdf', 10, 'application/pdf'))
             ->call('uploadCover')
             ->assertHasErrors(['cover']);
