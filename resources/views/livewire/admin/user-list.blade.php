@@ -7,7 +7,7 @@
 
     <div class="overflow-x-auto rounded-lg bg-white shadow">
         <table class="min-w-full text-sm">
-            <thead class="bg-slate-50 text-left text-xs uppercase text-slate-500">
+            <thead class="bg-slate-50 text-left text-xs uppercase text-slate-600">
                 <tr>
                     <th class="px-4 py-3">Nama</th>
                     <th class="px-4 py-3">Username</th>
@@ -24,11 +24,11 @@
                         <td class="px-4 py-3">{{ $user->email }}</td>
                         <td class="px-4 py-3">{{ $user->stocks_count }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="/admin/users/{{ $user->id }}/stocks" class="text-blue-600 hover:underline">Lihat stok</a>
+                            <a href="/admin/users/{{ $user->id }}/stocks" class="text-blue-700 hover:underline">Lihat stok</a>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Belum ada pengguna.</td></tr>
+                    <tr><td colspan="5" class="px-4 py-8 text-center text-slate-600">Belum ada pengguna.</td></tr>
                 @endforelse
             </tbody>
         </table>

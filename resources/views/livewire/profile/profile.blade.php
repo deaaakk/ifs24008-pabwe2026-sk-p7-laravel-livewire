@@ -16,7 +16,7 @@
 
             <form wire:submit="savePhoto" class="space-y-2">
                 <input type="file" wire:model="photo" accept="image/*" class="text-sm">
-                @error('photo') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+                @error('photo') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
                 <div class="flex gap-2">
                     <button type="submit" class="rounded bg-slate-700 px-3 py-1 text-sm text-white">Unggah foto</button>
                     @if ($user->profile_photo_path)
@@ -32,17 +32,17 @@
         <div>
             <label for="profile-name" class="block text-sm font-medium">Nama</label>
             <input id="profile-name" type="text" wire:model="name" class="w-full rounded border px-3 py-2">
-            @error('name') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            @error('name') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
         </div>
         <div>
             <label for="profile-username" class="block text-sm font-medium">Username</label>
             <input id="profile-username" type="text" wire:model="username" class="w-full rounded border px-3 py-2">
-            @error('username') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            @error('username') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
         </div>
         <div>
             <label for="profile-email" class="block text-sm font-medium">Email</label>
             <input id="profile-email" type="email" wire:model="email" class="w-full rounded border px-3 py-2">
-            @error('email') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            @error('email') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
         </div>
         <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-sm text-white">Simpan profil</button>
     </form>
@@ -52,12 +52,12 @@
         <div>
             <label for="profile-current" class="block text-sm font-medium">Password saat ini</label>
             <input id="profile-current" type="password" wire:model="current_password" class="w-full rounded border px-3 py-2">
-            @error('current_password') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            @error('current_password') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
         </div>
         <div>
             <label for="profile-password" class="block text-sm font-medium">Password baru</label>
             <input id="profile-password" type="password" wire:model="password" class="w-full rounded border px-3 py-2">
-            @error('password') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+            @error('password') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
         </div>
         <div>
             <label for="profile-confirm" class="block text-sm font-medium">Konfirmasi password baru</label>
