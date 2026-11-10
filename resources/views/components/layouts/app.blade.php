@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name', 'Stock Barang') }}</title>
+    <meta name="description" content="Aplikasi Stock Barang untuk mengelola stok, mengimpor dan mengekspor Excel, serta membuat item dengan AI.">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     @livewireStyles
@@ -29,6 +30,7 @@
             </div>
             <form method="POST" action="/logout">
                 @csrf
+
                 <button type="submit" class="w-full rounded bg-slate-700 px-3 py-2 text-sm hover:bg-slate-600">Keluar</button>
             </form>
         </aside>
