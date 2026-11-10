@@ -17,7 +17,7 @@
             @endif
 
             <form wire:submit="uploadCover" class="space-y-2">
-                <input type="file" wire:model="cover" accept="image/*" class="w-full text-sm">
+                <input type="file" aria-label="Pilih gambar cover" wire:model="cover" accept="image/*" class="w-full text-sm">
                 @error('cover') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
                 <div class="flex gap-2">
                     <button type="submit" class="rounded bg-slate-700 px-3 py-1 text-sm text-white">Unggah cover</button>
@@ -95,6 +95,7 @@
     @assets
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <style>.toastui-editor-mode-switch .tab-item { color: #475569; }</style>
     @endassets
 
     @script
@@ -106,6 +107,16 @@
             previewStyle: 'vertical',
             initialValue: $wire.description ?? '',
         });
+
+        const labelEditor = () => {
+            document.querySelectorAll('#md-editor .toastui-editor-pseudo-clipboard').forEach((el) => el.setAttribute('aria-label', 'Papan klip editor'));
+            document.querySelectorAll('#md-editor button.more').forEach((el) => {
+                el.setAttribute('aria-label', 'Menu lainnya');
+                el.setAttribute('title', 'Menu lainnya');
+            });
+        };
+        labelEditor();
+        new MutationObserver(labelEditor).observe(document.querySelector('#md-editor'), { childList: true, subtree: true });
 
         editor.on('change', () => {
             $wire.description = editor.getMarkdown();

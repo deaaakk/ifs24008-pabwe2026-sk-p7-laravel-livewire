@@ -15,7 +15,7 @@
     <div class="flex flex-wrap items-end gap-2">
         <input type="search" wire:model.live.debounce.300ms="search" placeholder="Cari nama / SKU…"
                class="rounded border border-slate-300 px-3 py-2 text-sm">
-        <select wire:model.live="statusFilter" class="rounded border border-slate-300 px-3 py-2 text-sm">
+        <select aria-label="Filter status" wire:model.live="statusFilter" class="rounded border border-slate-300 px-3 py-2 text-sm">
             <option value="">Semua status</option>
             @foreach ($statuses as $status)
                 <option value="{{ $status->value }}">{{ $status->label() }}</option>
@@ -23,7 +23,7 @@
         </select>
 
         <form wire:submit="importExcel" class="ml-auto flex items-center gap-2">
-            <input type="file" wire:model="importFile" accept=".xlsx,.xls" class="text-sm">
+            <input type="file" aria-label="Pilih berkas Excel" wire:model="importFile" accept=".xlsx,.xls" class="text-sm">
             <button type="submit" class="rounded bg-slate-700 px-3 py-2 text-sm text-white">Import Excel</button>
         </form>
     </div>

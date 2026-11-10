@@ -15,7 +15,7 @@
             @endif
 
             <form wire:submit="savePhoto" class="space-y-2">
-                <input type="file" wire:model="photo" accept="image/*" class="text-sm">
+                <input type="file" aria-label="Pilih foto profil" wire:model="photo" accept="image/*" class="text-sm">
                 @error('photo') <p class="text-sm text-red-700">{{ $message }}</p> @enderror
                 <div class="flex gap-2">
                     <button type="submit" class="rounded bg-slate-700 px-3 py-1 text-sm text-white">Unggah foto</button>
